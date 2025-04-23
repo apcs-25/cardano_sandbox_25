@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { paymentCredentialOf, stakeCredentialOf } from "@lucid-evolution/lucid";
 import { Button } from "@heroui/button";
 import { Skeleton } from "@heroui/skeleton";
@@ -13,14 +12,7 @@ export default function WalletConnectors() {
   const [walletConnection, setWalletConnection] = useWallet();
   const { lucid } = walletConnection;
 
-  const [wallets, setWallets] = useState<Wallet[]>();
-
-  let isInit = false;
-
-  useEffect(() => {
-    if (isInit) return;
-    else isInit = true;
-
+  function getWallets() {
     const wallets: Wallet[] = [];
 
     const { cardano } = window;
@@ -32,11 +24,12 @@ export default function WalletConnectors() {
       wallets.push(wallet);
     }
 
-    wallets.sort((l, r) => {
+    return wallets.sort((l, r) => {
       return l.name.toUpperCase() < r.name.toUpperCase() ? -1 : 1;
     });
-    setWallets(() => wallets);
-  }, []);
+  }
+
+  const wallets = getWallets();
 
   async function onConnectWallet(wallet: Wallet) {
     try {
